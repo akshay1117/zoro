@@ -1,0 +1,15 @@
+{
+  "name": "zoro-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev:api": "cd apps/api && source venv/bin/activate && uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "lint": "npm run lint --workspace=apps/web",
+    "format": "npm run format --workspace=apps/web",
+    "test:web": "npm run test --workspace=apps/web"
+  }
+}
