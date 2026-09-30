@@ -13,6 +13,7 @@ from app.core.config import settings
 from app.core.exceptions import ZoroException
 from app.middleware.request_id import RequestIDMiddleware
 from app.middleware.logging import StructlogMiddleware
+from app.middleware.security_headers import SecurityHeadersMiddleware
 
 # Structlog configuration
 structlog.configure(
@@ -74,6 +75,7 @@ else:
     )
 
 # Middlewares
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(StructlogMiddleware)
 app.add_middleware(RequestIDMiddleware)
 
@@ -118,14 +120,30 @@ async def custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExc
 
 
 # Health Endpoints
+from sqlalchemy import text
+from app.database.session import async_engine
+
 @app.get("/health/live", tags=["health"])
 async def health_live():
     return {"status": "ok", "type": "liveness"}
 
 @app.get("/health/ready", tags=["health"])
 async def health_ready():
-    # In the future, check database and external dependencies here
-    return {"status": "ok", "type": "readiness"}
+    try:
+        async with async_engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        db_status = "ok"
+    except Exception as e:
+        logger.error("database_health_check_failed", error=str(e))
+        db_status = "failed"
+        
+    return {
+        "status": "ok" if db_status == "ok" else "error",
+        "type": "readiness",
+        "components": {
+            "database": db_status
+        }
+    }
 
 from app.api.v1.router import api_router
 

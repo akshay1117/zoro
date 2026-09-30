@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { name: 'Trading', path: '/trading', icon: Briefcase },
   { name: 'Cybersecurity', path: '/cyber', icon: Shield },
   { name: 'Notes', path: '/notes', icon: BookOpen },
+  { name: 'Goals', path: '/goals', icon: Target },
 ];
 
 export const DesktopSidebar: React.FC = () => {
