@@ -1,5 +1,5 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pydantic
 pydantic-settings
 SQLAlchemy
@@ -9,3 +9,5 @@ passlib
 argon2-cffi
 python-jose
 python-multipart
+slowapi
+structlog
