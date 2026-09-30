@@ -5,6 +5,6 @@ import App from './App'
 describe('App', () => {
   it('renders successfully', () => {
     render(<App />)
-    expect(screen.getByText(/Get started/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/ZORO/i).length).toBeGreaterThan(0)
   })
 })
